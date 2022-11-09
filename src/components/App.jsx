@@ -2,13 +2,12 @@ import React, {Component} from "react";
 import ContactForm from "./ContactBook/ContactForm";
 import ContactList from "./ContactBook/ContactList";
 import Filter from "./ContactBook/Filter";
-import initialContacts from "./data/contacts.json";
 import { nanoid } from 'nanoid';
 import css from './ContactBook/ContactBook.module.css'
 
 class App extends Component {
   state = {
-    contacts: initialContacts,
+    contacts: [],
     filter: '',
   }
   
@@ -37,6 +36,21 @@ class App extends Component {
     this.setState(({ contacts }) => ({
       contacts: [contact, ...contacts],
     }));
+  }
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parseContacts = JSON.parse(contacts);
+    if (parseContacts) {
+      this.setState({ contacts: parseContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+    }
   }
   
   render() { 
